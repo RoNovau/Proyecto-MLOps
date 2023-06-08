@@ -26,16 +26,13 @@ async def cantidad_filmaciones_mes(Mes):
     
     mes_elegido= ((meses.index(Mes))+1)
     
-    cantidad_total= 0
+    cantidad= 0
 
     for i in df_total['release_date']:
-        if type(i) == str:
-            continue
         if i.month == mes_elegido:
-            cantidad_total+=1
+            cantidad+=1
 
-    return "{cantidad} peliculas fueron estrenadas en el mes de {mes}"\
-            .format(cantidad = cantidad_total, mes = Mes)
+    return f"{cantidad} peliculas fueron estrenadas en el mes de {Mes}"
 
 
 #Segundo endpoint: dia
@@ -46,98 +43,72 @@ async def cantidad_filmaciones_dia(Dia):
     dias= ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo']
     dia_elegido= ((dias.index(Dia)))
     
-    cantidad_total= 0
+    cantidad= 0
 
     for i in df_total['release_date']:
-        if type(i) == str:
-            continue
         if i.weekday() == dia_elegido:
-            cantidad_total+=1
+            cantidad+=1
 
-    return "{cantidad} peliculas fueron estrenadas los dias {dia}"\
-            .format(cantidad = cantidad_total, dia = Dia)
+    return f"{cantidad} peliculas fueron estrenadas los dias {Dia}"
 
 
 #Tercer endpoint: popularidad
 
 @app.get("/popularidad/{titulo}")
-def score_titulo(titulo_de_la_filmacion):
+async def score_titulo(titulo_de_la_filmacion):
     
     titulo= titulo_de_la_filmacion
-
-    for i in range(len(df_total)):
-
-        if df_total.iloc[i]['title'] == titulo:
+    datos= df_total[df_total['title'] == titulo]
             
-            año= df_total.iloc[i]['release_year']
-            score = df_total.iloc[i]['popularity']
-            
-            return "La pelicula {titulo} fue estrenada en el año {año} "\
-                   "con un score/popularidad de {score}"\
-                    .format(titulo = titulo, año = año, score = score)
+    return f"La pelicula {titulo} fue estrenada en el año {datos['release_year'][0]}\
+ con un score/popularidad de {round(datos['popularity'][0],1)}"
 
 
 #Cuarto endpoint: votos
 
 @app.get("/votos/{titulo}")
-def votos_titulo(titulo_de_la_filmacion):
+async def votos_titulo(titulo_de_la_filmacion):
+
     titulo= titulo_de_la_filmacion
+    datos= df_total[df_total['title'] == titulo]
+    votos= datos['vote_count'][0]
+    promedio= datos['vote_average'][0]
 
-    for i in range(len(df_total)):
-
-        año= df_total.iloc[i]['release_year']
-        votos = df_total.iloc[i]['vote_count']
-        promedio = df_total.iloc[i]['vote_average']
-
-        if df_total.iloc[i]['title'] == titulo:
-            
-            if df_total.iloc[i]['vote_count'] < 2000:
-
-                return "La pelicula {titulo} fue estrenada en el año {año} "\
-                        "y no cuenta con valoraciones suficientes para evaluar"\
-                        .format(titulo = titulo, año = año)
-
-            else:
-                
-                return "La pelicula {titulo} fue estrenada en el año {año}. "\
-                        "La misma cuenta con un total de {votos} valoraciones "\
-                        "y con un promedio de {promedio}".format(titulo = titulo, año = 
-                        año, votos= votos, promedio= promedio)
+    if votos < 2000:
+        
+        return f"La pelicula {titulo} fue estrenada en el año {datos['release_year'][0]} "\
+"y no cuenta con valoraciones suficientes para evaluar"
+    
+    else:
+        
+        return f"La pelicula {titulo} fue estrenada en el año \
+{datos['release_year'][0]}. La misma cuenta con un total de \
+{datos['vote_count'][0]} valoraciones, con un promedio de {datos['vote_average'][0]}."
 
 
 #Quinto endpoint: actor
 
 @app.get("/actor/{nombre_actor}")
-def get_actor(nombre_actor):
-    
+async def get_actor(nombre_actor):
+
     actor= nombre_actor
-    cantidad_peliculas= 0
-    retorno_total= 0
+    datos = df_total[df_total['actors_names'].str.contains(nombre_actor)]
+    cantidad= datos.shape[0]
+    retorno_total= datos['return'].sum()
+    promedio= retorno_total / cantidad
 
-    for i in range(len(df_total)):
-
-        if actor in (df_total.iloc[i]['actors_names']):
-            
-            cantidad_peliculas +=1
-            retorno_total+= df_total.iloc[i]['return']
-        
-    promedio_retorno= (retorno_total/cantidad_peliculas)
-
-    return "El actor {actor} ha participado de {cantidad_peliculas} "\
-            "filmaciones, el mismo ha conseguido un retorno "\
-            "de {retorno_total} con un promedio de {promedio} por filmacion."\
-            .format(actor = actor, cantidad_peliculas = cantidad_peliculas, 
-                    retorno_total= round(retorno_total, 2), promedio= round(promedio_retorno,2))
+    return f"El actor {actor} ha participado en {cantidad} filmaciones, el mismo\
+ ha conseguido un retorno de {retorno_total:.2f}, con un promedio de {promedio} por filmacion."
 
 
 #Sexto endpoint: director
 
 @app.get("/director/{nombre_director}")
 
-def get_director(nombre_director):
+async def get_director(nombre_director):
     
     director= nombre_director
-    datos= df_total[df_total['directors_names'].str.contains('John Lasseter')].reset_index(drop=True)
+    datos= df_total[df_total['directors_names'].str.contains(nombre_director)].reset_index(drop=True)
     retorno_total= datos['return'].sum()
     peliculas= datos[['title', 'release_date', 'return', 'budget', 'revenue']].to_numpy().tolist()
 
