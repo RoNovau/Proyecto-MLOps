@@ -62,7 +62,7 @@ async def score_titulo(titulo_de_la_filmacion):
     anio= datos['release_year'].values[0]
     score= datos['popularity'].values[0]
             
-    return {'titulo':titulo, 'anio':anio, 'popularidad': round(score,2)}
+    return {'titulo':titulo, 'anio': f'{anio}', 'popularidad': f'round(score,2)'}
 
 
 #Cuarto endpoint: votos
@@ -82,7 +82,8 @@ async def votos_titulo(titulo_de_la_filmacion):
     
     else:
         
-        return {'titulo':titulo, 'anio':anio, 'voto_total':votos, 'voto_promedio':promedio}
+        return {'titulo':titulo, 'anio': f'{anio}', 'voto_total': 
+                f'{votos}', 'voto_promedio':f'{promedio}'}
 
 
 #Quinto endpoint: actor
@@ -96,9 +97,9 @@ async def get_actor(nombre_actor):
     retorno_total= datos['return'].sum()
     promedio= retorno_total / cantidad
 
-    return {'actor':actor, 'cantidad_filmaciones':cantidad, 
-            'retorno_total': round(retorno_total,2), 
-            'retorno_promedio': round(promedio,2)}
+    return {'actor':actor, 'cantidad_filmaciones': f'{cantidad}', 
+            'retorno_total': f'{round(retorno_total,2)}', 
+            'retorno_promedio': f'{round(promedio,2)}'}
 
 
 #Sexto endpoint: director
@@ -112,7 +113,7 @@ async def get_director(nombre_director):
     retorno_total= datos['return'].sum()
     peliculas= datos[['title', 'release_year', 'return', 'budget', 'revenue']]
 
-    return {'director':director, 'retorno_total_director':retorno_total, 
-            'peliculas':peliculas['title'].values, 'anio':peliculas['release_year'].values, 
-            'retorno_pelicula':peliculas['return'].values, 'budget_pelicula':
+    return {'director':director, 'retorno_total_director': f'{retorno_total}', 
+            'peliculas':peliculas['title'].values, 'anio': peliculas['release_year'].values, 
+            'retorno_pelicula': peliculas['return'].values, 'budget_pelicula':
             peliculas['budget'].values, 'revenue_pelicula':peliculas['revenue'].values}
