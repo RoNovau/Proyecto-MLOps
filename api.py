@@ -54,7 +54,7 @@ async def cantidad_filmaciones_dia(Dia):
 
 #Tercer endpoint: popularidad
 
-@app.get("/popularidad/{titulo}")
+@app.get("/popularidad/{titulo_de_la_filmacion}")
 async def score_titulo(titulo_de_la_filmacion):
     
     titulo= titulo_de_la_filmacion
@@ -67,7 +67,7 @@ async def score_titulo(titulo_de_la_filmacion):
 
 #Cuarto endpoint: votos
 
-@app.get("/votos/{titulo}")
+@app.get("/votos/{titulo_de_la_filmacion}")
 async def votos_titulo(titulo_de_la_filmacion):
 
     titulo= titulo_de_la_filmacion
