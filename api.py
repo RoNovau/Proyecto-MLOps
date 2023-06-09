@@ -97,8 +97,8 @@ async def get_actor(nombre_actor):
     retorno_total= datos['return'].sum()
     promedio= retorno_total / cantidad
 
-    return f"El actor {actor} ha participado en {cantidad} filmaciones, el mismo\
- ha conseguido un retorno de {retorno_total:.2f}, con un promedio de {promedio} por filmacion."
+    return f"El/la actor/actriz {actor} ha participado en {cantidad} filmaciones y ha conseguido\
+un retorno de {retorno_total:.2f}, con un promedio de {round(promedio, 2)} por filmacion."
 
 
 #Sexto endpoint: director
@@ -112,5 +112,5 @@ async def get_director(nombre_director):
     retorno_total= datos['return'].sum()
     peliculas= datos[['title', 'release_date', 'return', 'budget', 'revenue']].to_numpy().tolist()
 
-    return f"El éxito del director {director} se pude medir por su retorno de {retorno_total:.2f}.\
+    return f"El éxito del/la director/a {director} se pude medir por su retorno de {retorno_total:.2f}.\
  Dirigió las siguientes películas (título, fecha, retorno, presupuesto, recaudacion):", peliculas
