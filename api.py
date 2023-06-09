@@ -59,8 +59,8 @@ async def score_titulo(titulo_de_la_filmacion):
     
     titulo= titulo_de_la_filmacion
     datos= df_total[df_total['title'] == titulo]
-    anio= datos['release_year'][0]
-    score= datos['popularity'][0]
+    anio= datos['release_year'].values[0]
+    score= datos['popularity'].values[0]
             
     return {'titulo':titulo, 'anio':anio, 'popularidad': round(score,2)}
 
@@ -72,9 +72,9 @@ async def votos_titulo(titulo_de_la_filmacion):
 
     titulo= titulo_de_la_filmacion
     datos= df_total[df_total['title'] == titulo]
-    votos= datos['vote_count'][0]
-    promedio= datos['vote_average'][0]
-    anio= datos['release_year'][0]
+    votos= datos['vote_count'].values[0]
+    promedio= datos['vote_average'].values[0]
+    anio= datos['release_year'].values[0]
 
     if votos < 2000:
         
@@ -110,9 +110,9 @@ async def get_director(nombre_director):
     director= nombre_director
     datos= df_total[df_total['directors_names'].str.contains(nombre_director)].reset_index(drop=True)
     retorno_total= datos['return'].sum()
-    #peliculas= datos[['title', 'release_date', 'return', 'budget', 'revenue']].to_numpy().tolist()
+    peliculas= datos[['title', 'release_year', 'return', 'budget', 'revenue']]
 
     return {'director':director, 'retorno_total_director':retorno_total, 
-            'peliculas':datos['title'][0], 'anio':datos['release_year'][0], 
-            'retorno_pelicula':datos['return'][0], 'budget_pelicula':
-            datos['budget'][0], 'revenue_pelicula':datos['revenue'][0]}
+            'peliculas':peliculas['title'].values, 'anio':peliculas['release_year'].values, 
+            'retorno_pelicula':peliculas['return'].values, 'budget_pelicula':
+            peliculas['budget'].values, 'revenue_pelicula':peliculas['revenue'].values}
