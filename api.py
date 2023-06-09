@@ -32,7 +32,7 @@ async def cantidad_filmaciones_mes(Mes):
         if i.month == mes_elegido:
             cantidad+=1
 
-    return f"{cantidad} peliculas fueron estrenadas en el mes de {Mes}"
+    return {'mes':Mes, 'cantidad':cantidad}
 
 
 #Segundo endpoint: dia
@@ -49,7 +49,7 @@ async def cantidad_filmaciones_dia(Dia):
         if i.weekday() == dia_elegido:
             cantidad+=1
 
-    return f"{cantidad} peliculas fueron estrenadas los dias {Dia}"
+    return {'dia':Dia, 'cantidad':cantidad}
 
 
 #Tercer endpoint: popularidad
@@ -59,9 +59,10 @@ async def score_titulo(titulo_de_la_filmacion):
     
     titulo= titulo_de_la_filmacion
     datos= df_total[df_total['title'] == titulo]
+    anio= {datos['release_year'][0]}
+    score= round(datos['popularity'][0],1)
             
-    return f"La pelicula {titulo} fue estrenada en el año {datos['release_year'][0]}\
- con un score/popularidad de {round(datos['popularity'][0],1)}"
+    return {'titulo':titulo, 'anio':anio, 'popularidad':score}
 
 
 #Cuarto endpoint: votos
@@ -73,17 +74,15 @@ async def votos_titulo(titulo_de_la_filmacion):
     datos= df_total[df_total['title'] == titulo]
     votos= datos['vote_count'][0]
     promedio= datos['vote_average'][0]
+    anio= datos['release_year'][0]
 
     if votos < 2000:
         
-        return f"La pelicula {titulo} fue estrenada en el año {datos['release_year'][0]} "\
-"y no cuenta con valoraciones suficientes para evaluar"
+        return f"La pelicula {titulo} no cuenta con valoraciones suficientes para evaluar"
     
     else:
         
-        return f"La pelicula {titulo} fue estrenada en el año \
-{datos['release_year'][0]}. La misma cuenta con un total de \
-{datos['vote_count'][0]} valoraciones, con un promedio de {datos['vote_average'][0]}."
+        return {'titulo':titulo, 'anio':anio, 'voto_total':votos, 'voto_promedio':promedio}
 
 
 #Quinto endpoint: actor
@@ -97,8 +96,9 @@ async def get_actor(nombre_actor):
     retorno_total= datos['return'].sum()
     promedio= retorno_total / cantidad
 
-    return f"El/la actor/actriz {actor} ha participado en {cantidad} filmaciones y ha conseguido\
-un retorno de {retorno_total:.2f}, con un promedio de {round(promedio, 2)} por filmacion."
+    return {'actor':actor, 'cantidad_filmaciones':cantidad, 
+            'retorno_total': round(retorno_total,2), 
+            'retorno_promedio': round(promedio,2)}
 
 
 #Sexto endpoint: director
@@ -112,5 +112,8 @@ async def get_director(nombre_director):
     retorno_total= datos['return'].sum()
     peliculas= datos[['title', 'release_date', 'return', 'budget', 'revenue']].to_numpy().tolist()
 
-    return f"El éxito del/la director/a {director} se pude medir por su retorno de {retorno_total:.2f}.\
- Dirigió las siguientes películas (título, fecha, retorno, presupuesto, recaudacion):", peliculas
+
+    return {'director':director, 'retorno_total_director':retorno_total, 
+            'peliculas':datos['title'][0], 'anio':datos['release_year'][0], 
+            'retorno_pelicula':datos['return'][0], 'budget_pelicula':
+            datos['budget'][0], 'revenue_pelicula':datos['revenue'][0]}
