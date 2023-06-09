@@ -91,7 +91,7 @@ async def votos_titulo(titulo_de_la_filmacion):
 async def get_actor(nombre_actor):
 
     actor= nombre_actor
-    datos = df_total[df_total['actors_names'].str.contains(nombre_actor)]
+    datos = df_total[df_total['actors_name'].str.contains(actor)]
     cantidad= datos.shape[0]
     retorno_total= datos['return'].sum()
     promedio= retorno_total / cantidad
@@ -108,7 +108,7 @@ async def get_actor(nombre_actor):
 async def get_director(nombre_director):
     
     director= nombre_director
-    datos= df_total[df_total['directors_names'].str.contains(nombre_director)].reset_index(drop=True)
+    datos= df_total[df_total['directors_names'].str.contains(director)].reset_index(drop=True)
     retorno_total= datos['return'].sum()
     peliculas= datos[['title', 'release_year', 'return', 'budget', 'revenue']]
 
