@@ -28,18 +28,21 @@ async def cantidad_filmaciones_mes(mes):
     meses= ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', \
             'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
     
-    mes_elegido= ((meses.index(str.lower(mes)))+1)
-    
-    cantidad= 0
 
-    for i in df_total['release_date']:
-        if i.month == mes_elegido:
-            cantidad+=1
+    if mes not in meses:
+        return {'error': f'El mes: {mes} no se encontro.'}
+    
+    else:
+        mes_elegido= ((meses.index(mes.lower()))+1)
+    
+        cantidad= 0
+
+        for i in df_total['release_date']:
+            if i.month == mes_elegido:
+                cantidad+=1
 
         return {'mes':mes, 'cantidad':cantidad}
     
-    else:
-            return {'error': f'El mes: {mes} no se encontro.'}
 
 
 #Segundo endpoint: dia
@@ -50,21 +53,21 @@ async def cantidad_filmaciones_dia(dia):
     '''Se ingresa el dia y la funcion retorna la cantidad de peliculas que se estrebaron ese dia historicamente'''
 
     dias= ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
-    dia_elegido= (dias.index(str.lower(dia)))
     
-    cantidad= 0
+    if dia not in dias:
+        return {'error': f'El dia: {dia} no se encontro'}
+    
+    else:
+        dia_elegido= (dias.index(dia.lower()))
+        
+        cantidad= 0
 
-    for i in df_total['release_date']:
-        if i.weekday() == dia_elegido:
-            cantidad+=1
+        for i in df_total['release_date']:
+            if i.weekday() == dia_elegido:
+                cantidad+=1
 
             return {'dia':dia, 'cantidad':cantidad}
         
-        else:
-            
-            return {'error': f'El dia: {dia} no se encontro'}
-
-
 
 #Tercer endpoint: popularidad
 
