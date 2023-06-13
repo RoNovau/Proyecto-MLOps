@@ -159,6 +159,8 @@ async def get_director(nombre_director):
         return {'error': f'El director {director} no se encontro'}
 
 
+#Septimo endpoint: recomendacion
+
 # lectura del csv que alimenta el modelo de machine learning
 df_modelo= pd.read_csv('modelo.csv')
 
@@ -174,7 +176,6 @@ titles= df_modelo['title']
 indices= pd.Series(df_modelo.index, index=df_modelo['title'])
 
 
-#Septimo endpoint: recomendacion
 
 @app.get("/recomendacion/{titulo}")
 
