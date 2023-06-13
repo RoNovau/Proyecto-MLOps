@@ -119,15 +119,14 @@ async def get_actor(nombre_actor):
     '''Se ingresa el nombre de un actor que se encuentre dentro de un dataset debiendo devolver el éxito del mismo
       medido a través del retorno. Además, la cantidad de películas que en las que ha participado y el promedio de retorno'''
     
-    actor= nombre_actor
-    datos = df_total[df_total['actors_name'].str.contains(actor)]
+    datos = df_total[df_total['actors_names'].str.contains(nombre_actor)]
     cantidad= datos.shape[0]
     retorno_total= datos['return'].sum()
     promedio= retorno_total / cantidad
 
-    return {'actor':actor, 'cantidad_filmaciones': f'{cantidad}', 
-            'retorno_total': f'{round(retorno_total,2)}', 
-            'retorno_promedio': f'{round(promedio,2)}'}
+    return {'actor':nombre_actor, 'cantidad_filmaciones': f'{cantidad}', 
+                'retorno_total': f'{round(retorno_total,2)}', 
+                'retorno_promedio': f'{round(promedio,2)}'}
     
 
 
