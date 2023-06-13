@@ -29,7 +29,7 @@ async def cantidad_filmaciones_mes(mes):
             'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
     
 
-    if mes not in meses:
+    if mes.lower() not in meses:
         return {'error': f'El mes: {mes} no se encontro.'}
     
     else:
@@ -54,7 +54,7 @@ async def cantidad_filmaciones_dia(dia):
 
     dias= ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
     
-    if dia not in dias:
+    if dia.lower() not in dias:
         return {'error': f'El dia: {dia} no se encontro'}
     
     else:
@@ -66,7 +66,7 @@ async def cantidad_filmaciones_dia(dia):
             if i.weekday() == dia_elegido:
                 cantidad+=1
 
-            return {'dia':dia, 'cantidad':cantidad}
+        return {'dia':dia, 'cantidad':cantidad}
         
 
 #Tercer endpoint: popularidad
@@ -83,7 +83,7 @@ async def score_titulo(titulo):
     if datos.shape[0] > 0:    
         return {'titulo':titulo, 'anio': f'{anio}', 'popularidad': f'{score}'}
 
-    else:
+    elif datos.shape[0] == 0:
         return {'error': f'La pelicula {titulo} no se encontro'}
 
 #Cuarto endpoint: votos
@@ -126,12 +126,14 @@ async def get_actor(nombre_actor):
     promedio= retorno_total / cantidad
 
 
-    if datos.shape[0] > 0:
+    if cantidad > 0:
+
         return {'actor':actor, 'cantidad_filmaciones': f'{cantidad}', 
             'retorno_total': f'{round(retorno_total,2)}', 
             'retorno_promedio': f'{round(promedio,2)}'}
     
-    else:
+    elif cantidad == 0:
+
         return {'error': f'El actor {actor} no se encontro'}
 
 
@@ -155,11 +157,12 @@ async def get_director(nombre_director):
     revenue= datos['revenue'].to_numpy().tolist()
 
     if datos.shape[0] > 0:
+
         return {'director':director, 'retorno_total_director':retorno_total, 
             'peliculas': titles, 'anio':years, 'retorno_pelicula':returns, 
             'budget_pelicula':budget, 'revenue_pelicula':revenue}
     
-    else:
+    elif datos.shape[0] == 0:
         return {'error': f'El director {director} no se encontro'}
 
 
@@ -182,17 +185,17 @@ indices= pd.Series(df_modelo.index, index=df_modelo['title'])
 
 @app.get("/recomendacion/{titulo}")
 
-def recommendacion(titulo):
+def recomendacion(titulo):
 
     '''Ingresas un nombre de pelicula y te recomienda las similares en una lista'''
 
     idx= indices[titulo]
-    sim_scores = list(enumerate(cosine_sim[idx][0]))
+    sim_scores = list(enumerate(cosine_sim[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
     sim_scores= sim_scores[1:31]
     movie_indices= [i[0] for i in sim_scores]
 
-    if sim_scores != []:
+    if idx.size > 0:
 
         return {'Lista recomendada' : titles.iloc[movie_indices].head().tolist()}
     
