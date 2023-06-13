@@ -23,7 +23,7 @@ El proyecto, que forma parte de las practicas de la academia SoyHenry, se encont
 
 El workflow del proyecto puede observarse en la siguiente imagen. El proceso completo cuenta con varias etapas, desde la Ingenieria de Datos (ETL), la creación de una API, el deployment y el tratamiento de Machine Learning asociado al EDA. A continuación se explican brevemente cada etapa.
 
-![Workflow](src\DiagramaConceptualDelFlujoDeProcesos.png)
+<p align=center><img src=src/DiagramaConceptualDelFlujoDeProcesos.png><p>
 
 ## 🧹 3. Extracción, transformación y carga de datos. (ETL) <a name="etl"></a>
 
