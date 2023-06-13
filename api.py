@@ -2,6 +2,8 @@ from fastapi import FastAPI
 import pandas as pd
 import numpy as np
 import datetime
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 #Transformamos el csv limpio con todos los datos a dataframe.
@@ -121,3 +123,31 @@ async def get_director(nombre_director):
     return {'director':director, 'retorno_total_director':retorno_total, 
             'peliculas': titles, 'anio':years, 'retorno_pelicula':returns, 
             'budget_pelicula':budget, 'revenue_pelicula':revenue}
+
+
+# lectura del csv que alimenta el modelo de machine learning
+df_modelo= pd.read_csv('modelo.csv')
+
+# creacion de la matriz 
+count= CountVectorizer(analyzer= 'word', ngram_range= (1,2), min_df = 0, stop_words= 'english')
+count_matrix = count.fit_transform(df_modelo['info'])
+
+#creacion de la matriz de similitud
+cosine_sim = cosine_similarity(count_matrix, count_matrix)
+
+#creacion variables titulos e indices
+titles= df_modelo['title']
+indices= pd.Series(df_modelo.index, index=df_modelo['title'])
+
+
+#Septimo endpoint: recomendacion
+
+@app.get("/recomendacion/{title}")
+
+def get_recommendationes(title):
+    idx= indices[title]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores= sim_scores[1:31]
+    movie_indices= [i[0] for i in sim_scores]
+    return {'Lista recomendada' : titles.iloc[movie_indices].head().tolist()}
