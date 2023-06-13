@@ -125,16 +125,10 @@ async def get_actor(nombre_actor):
     retorno_total= datos['return'].sum()
     promedio= retorno_total / cantidad
 
-
-    if cantidad > 0:
-
-        return {'actor':actor, 'cantidad_filmaciones': f'{cantidad}', 
+    return {'actor':actor, 'cantidad_filmaciones': f'{cantidad}', 
             'retorno_total': f'{round(retorno_total,2)}', 
             'retorno_promedio': f'{round(promedio,2)}'}
     
-    elif cantidad == 0:
-
-        return {'error': f'El actor {actor} no se encontro'}
 
 
 #Sexto endpoint: director
